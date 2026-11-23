@@ -73,6 +73,11 @@
     <div class="kpi"><b id="k2">0</b><span>feitas hoje</span></div>
     <div class="kpi"><b id="k3">0</b><span>dias até a Black Friday</span></div>
   </div>
+  <section id="secRotina" hidden>
+    <h2>✅ Rotina obrigatória · hoje e todo dia</h2>
+    <p class="nota">Tarefa fixa, nos horários. O checklist zera sozinho a cada dia.</p>
+    <div class="lista" id="rotina"></div>
+  </section>
   <section>
     <h2>🔥 Hoje · segunda, 23/11</h2>
     <p class="nota">Marque o que for fazendo. Fica salvo só neste navegador; no fim do dia avise a Manu do que fechou.</p>
@@ -101,7 +106,65 @@ const DADOS = {
  "nome": "Luiza",
  "emoji": "📱",
  "papel": "Social Media · Grupo ROB",
- "foco": "Hoje o que não pode passar: teaser do Réveillon no ar com a enquete, e a resposta de quantos criativos já foram pro Celso.",
+ "foco": "Hoje o que não pode passar: a rotina social nos horários (todo dia), o teaser do Réveillon no ar com a enquete, o recap do Pelé na Ogro e no ROB, e a resposta de quantos criativos já foram pro Celso.",
+ "rotina": [
+  {
+   "t": "Comentários: 15 min no início do dia, em todas as marcas",
+   "w": "10h às 11h",
+   "c": "",
+   "u": "",
+   "n": "E ficar ligada a cada postagem pra ir respondendo ao longo do dia.",
+   "p": false
+  },
+  {
+   "t": "Story de almoço da Temakeria",
+   "w": "11h às 12h",
+   "c": "",
+   "u": "",
+   "n": "",
+   "p": false
+  },
+  {
+   "t": "Stories da Ogro",
+   "w": "15h às 17h",
+   "c": "",
+   "u": "",
+   "n": "",
+   "p": false
+  },
+  {
+   "t": "Stories da Øliver's atacando as 3 frentes: delivery, à la carte e rodízio",
+   "w": "16h às 18h",
+   "c": "",
+   "u": "",
+   "n": "Não deixar pra depois das 18h.",
+   "p": false
+  },
+  {
+   "t": "Story de fim de dia da Temakeria pra puxar pedido até 23h",
+   "w": "17h às 18h",
+   "c": "",
+   "u": "",
+   "n": "Narrativa envolvente, nada genérico. Ideias: bastidor do sushiman montando o pedido da noite, enquete “qual temaki fecha o seu dia?”, pedido real saindo pra entrega, contagem “cozinha aberta até 23h”.",
+   "p": false
+  },
+  {
+   "t": "Comentários: 15 min no fim do dia",
+   "w": "18h às 19h",
+   "c": "",
+   "u": "",
+   "n": "",
+   "p": false
+  },
+  {
+   "t": "Pesquisa de trends da semana: 30 min no início ou no fim do dia",
+   "w": "30 min",
+   "c": "",
+   "u": "",
+   "n": "Ver o que dá pra adaptar pras marcas e postar AINDA na mesma semana.",
+   "p": false
+  }
+ ],
  "hoje": [
   {
    "t": "Teaser do Réveillon Araruama no ar (10 a 15s, conteúdo do ano passado, sem data e sem preço)",
@@ -136,12 +199,12 @@ const DADOS = {
    "p": false
   },
   {
-   "t": "Recap do Pelé: carrossel por marca + ROB com a foto da equipe (se ainda não saiu, avisar a Manu)",
-   "w": "conferir",
+   "t": "Recap do Pelé na Ogro e no Grupo ROB (só entrou na Øliver's): selecionar fotos boas",
+   "w": "hoje",
    "c": "cs-ogro-steaks#38",
    "u": "https://github.com/dev-seven7/cs-ogro-steaks/issues/38",
-   "n": "",
-   "p": false
+   "n": "Carrossel com as melhores fotos da corrida; no ROB, com a foto da equipe.",
+   "p": true
   },
   {
    "t": "Seu agente: instalar os programas da lista (inclui Antigravity IDE)",
@@ -191,11 +254,20 @@ const DADOS = {
    "Sex 27/11",
    [
     "Black Friday oficial (sexta é só BF, sem Gatola)",
+    "Campanha iFood no ar (27 e 28/11)",
     "Restante dos criativos Ghost entregue"
    ]
   ]
  ],
  "semana": [
+  {
+   "t": "Campanha iFood (Banner Home + Vídeo Ads, 3 marcas): só sex 27 e sáb 28/11",
+   "w": "27 e 28/11",
+   "c": "cs-rob-food#118",
+   "u": "https://github.com/dev-seven7/cs-rob-food/issues/118",
+   "n": "Não entramos na Black Week do iFood (23 a 26/11). Posts sobre a ação só a partir de sexta.",
+   "p": false
+  },
   {
    "t": "Black Friday do cardápio próprio: stories e criativos nas 3 marcas (Øliver's, Temakeria e Ogro)",
    "w": "aquecimento 25 e 26 · oficial sex 27/11",
@@ -273,15 +345,15 @@ const DADOS = {
  ],
  "id": "luiza",
  "painel": "https://dev-seven7.github.io/time-marketing-rob/",
- "atualizado": "seg 23/11/2026 · 10h30"
+ "atualizado": "seg 23/11/2026 · 11h"
 };
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const KEY='daily-'+DADOS.id+'-2311';
 let st={}; try{st=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){st={}}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 const linkify=s=>esc(s).replace(/(https:\/\/[^\s]+)/g,'<a class="ref" href="$1" target="_blank" rel="noopener">abrir link</a>');
-function lista(id,arr,check){
-  const el=document.getElementById(id);
+function lista(id,arr,check,elId){
+  const el=document.getElementById(elId||id);
   el.innerHTML=arr.map((o,ix)=>{
     const k=id+ix, done=!!st[k];
     return `<div class="item${done?' done':''}">${check?`<input type="checkbox" data-k="${k}"${done?' checked':''} aria-label="feito">`:''}
@@ -300,7 +372,9 @@ document.getElementById('sub').textContent=DADOS.papel+' · atualizado '+DADOS.a
 document.getElementById('links').innerHTML=`<a href="${esc(DADOS.painel)}" target="_blank" rel="noopener">📊 Painel do time</a><a href="https://dev-seven7.github.io/direcionamento-expansao-olivers/" target="_blank" rel="noopener">🎥 Gravação de expansão</a>`;
 document.getElementById('foco').innerHTML='<b>Foco de hoje.</b> '+esc(DADOS.foco);
 const semana=[...DADOS.semana].sort((a,b)=>(b.p?1:0)-(a.p?1:0));
-lista('hoje',DADOS.hoje,true); lista('semana',semana,true); lista('continuo',DADOS.continuo,false);
+if(DADOS.rotina){document.getElementById('secRotina').hidden=false;const dk=new Date().toISOString().slice(0,10);
+  const r=DADOS.rotina; lista('rotina'+dk,r,true,'rotina');}
+lista('hoje',DADOS.hoje,true);lista('semana',semana,true); lista('continuo',DADOS.continuo,false);
 const hojeTxt='Seg 23/11';
 document.getElementById('dias').innerHTML=DADOS.dias.map(([d,its])=>`<div class="dia${d===hojeTxt?' hoje':''}"><h3>${esc(d)}${d===hojeTxt?' · hoje':''}</h3><ul>${its.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
 document.getElementById('foot').textContent='Daily montada pelo THEO com a Manu · dúvidas, chama a Manu';
